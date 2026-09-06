@@ -1,0 +1,35 @@
+version: "3.8"
+
+services:
+  emqx:
+    image: emqx/emqx:latest
+    container_name: gridpulse-emqx
+    ports:
+      - "1883:1883"
+      - "18083:18083"
+    environment:
+      EMQX_NAME: gridpulse
+      EMQX_LOADED_PLUGINS: "emqx_dashboard"
+    volumes:
+      - emqx_data:/opt/emqx/data
+    restart: unless-stopped
+
+  influxdb:
+    image: influxdb:2
+    container_name: gridpulse-influxdb
+    ports:
+      - "8086:8086"
+    environment:
+      DOCKER_INFLUXDB_INIT_MODE: setup
+      DOCKER_INFLUXDB_INIT_USERNAME: admin
+      DOCKER_INFLUXDB_INIT_PASSWORD: gridpulse123
+      DOCKER_INFLUXDB_INIT_ORG: gridpulse
+      DOCKER_INFLUXDB_INIT_BUCKET: telemetry
+      DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: gridpulse-dev-token
+    volumes:
+      - influxdb_data:/var/lib/influxdb2
+    restart: unless-stopped
+
+volumes:
+  emqx_data:
+  influxdb_data:
