@@ -6,6 +6,9 @@ import { PoolOverview } from './components/PoolOverview';
 import { BatteryGrid } from './components/BatteryGrid';
 import { PowerFlowChart } from './components/PowerFlowChart';
 import { EventLog } from './components/EventLog';
+import { EnergyFlowVisualization } from './components/EnergyFlowVisualization';
+import { SimulationStats } from './components/SimulationStats';
+import { BatteryHeatmap } from './components/BatteryHeatmap';
 import { useGridData } from './hooks/useGridData';
 
 export default function App() {
@@ -48,6 +51,22 @@ export default function App() {
 
               <BatteryGrid batteries={batteries} onDispatch={dispatchManualCommand} />
             </>
+          )}
+
+          {activeTab === 'visualization' && (
+            <div className="space-y-6">
+              <EnergyFlowVisualization
+                batteries={batteries}
+                gridState={gridState}
+                poolAggregate={poolAggregate}
+              />
+              <SimulationStats
+                batteries={batteries}
+                gridState={gridState}
+                poolAggregate={poolAggregate}
+              />
+              <BatteryHeatmap batteries={batteries} />
+            </div>
           )}
 
           {activeTab === 'batteries' && (

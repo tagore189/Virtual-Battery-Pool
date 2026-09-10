@@ -3,6 +3,7 @@ import React from 'react';
 export function Sidebar({ activeTab, setActiveTab }) {
   const navItems = [
     { id: 'dashboard', label: 'Dashboard', icon: '📊' },
+    { id: 'visualization', label: 'Visualization', icon: '🔮' },
     { id: 'batteries', label: 'Battery Pool', icon: '🔋' },
     { id: 'analytics', label: 'Power Flow', icon: '📈' },
     { id: 'events', label: 'Event Log', icon: '📋' },

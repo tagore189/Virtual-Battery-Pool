@@ -30,3 +30,35 @@ body {
   backdrop-filter: blur(12px);
   border: 1px solid rgba(30, 41, 59, 0.7);
 }
+
+/* ── Energy Flow Visualization Animations ─────────────────── */
+
+@keyframes flow-right {
+  from { stroke-dashoffset: 20; }
+  to   { stroke-dashoffset: 0; }
+}
+@keyframes flow-left {
+  from { stroke-dashoffset: 0; }
+  to   { stroke-dashoffset: 20; }
+}
+@keyframes sun-pulse {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.045); }
+}
+@keyframes battery-glow {
+  0%, 100% { opacity: 0.04; }
+  50%      { opacity: 0.14; }
+}
+
+.animate-flow-right {
+  animation: flow-right 0.55s linear infinite;
+}
+.animate-flow-left {
+  animation: flow-left 0.55s linear infinite;
+}
+.animate-sun-pulse {
+  animation: sun-pulse 3s ease-in-out infinite;
+}
+.animate-battery-glow {
+  animation: battery-glow 2s ease-in-out infinite;
+}
