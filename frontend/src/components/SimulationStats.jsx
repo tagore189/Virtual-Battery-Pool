@@ -50,7 +50,7 @@ function RingGauge({ value, max, color, label, size = 72 }) {
 
 /* ─── Main Component ──────────────────────────────────────── */
 
-export function SimulationStats({ batteries, gridState, poolAggregate }) {
+export function SimulationStats({ batteries, gridState, poolAggregate, environment = {} }) {
   const stats = useMemo(() => {
     const chargeEff  = 0.95;
     const dischargeEff = 0.93;
@@ -68,8 +68,7 @@ export function SimulationStats({ batteries, gridState, poolAggregate }) {
     const absPower = Math.abs(poolAggregate.netPower || 0);
     const energyThroughput = (absPower * 0.28).toFixed(1);       // rough ≈ kWh
 
-    const baseSolar = (poolAggregate.availablePower || 40) * 0.6;
-    const solarGen  = Math.max(0, baseSolar + Math.sin(Date.now() / 3000) * baseSolar * 0.12);
+    const solarGen = Number(environment.solarGeneration ?? 0);
     const co2Offset = (solarGen * 0.28 * 0.5).toFixed(1);        // 0.5 kg/kWh
 
     const avgTemp = batteries.length > 0
@@ -89,7 +88,7 @@ export function SimulationStats({ batteries, gridState, poolAggregate }) {
       energyThroughput, solarGen: solarGen.toFixed(1),
       co2Offset, avgTemp, avgHealth, capacityUtil,
     };
-  }, [batteries, gridState, poolAggregate]);
+  }, [batteries, gridState, poolAggregate, environment]);
 
   return (
     <div className="space-y-4">

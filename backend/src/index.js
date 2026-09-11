@@ -19,6 +19,22 @@ const mqttClient = createMqttClient(MQTT_URL, MQTT_CLIENT_ID);
 const controller = new GridController(pool, mqttClient);
 const { broadcast } = createWsBroadcaster(parseInt(WS_PORT));
 
+let currentEnvironment = {
+  weather: "clear",
+  cloudCover: 10,
+  solarIrradiance: 900,
+  windSpeed: 6,
+  temperature: 28,
+  humidity: 40,
+  timeOfDay: 12,
+  solarGeneration: 0,
+  windGeneration: 0,
+  totalRenewable: 0,
+  load: 25,
+  powerImbalance: 0,
+  activeScenario: "normal",
+};
+
 mqttClient.on("message", (topic, payload) => {
   try {
     const data = JSON.parse(payload.toString());
@@ -34,6 +50,11 @@ mqttClient.on("message", (topic, payload) => {
       controller.onFrequencyUpdate(data.frequency);
       broadcast("grid", controller.getState());
     }
+
+    if (topic === "environment/telemetry") {
+      currentEnvironment = { ...currentEnvironment, ...data };
+      broadcast("environment", currentEnvironment);
+    }
   } catch (err) {
     console.error("[MSG] parse error:", err.message);
   }
@@ -44,13 +65,14 @@ setInterval(() => {
     grid: controller.getState(),
     pool: pool.aggregate(),
     batteries: pool.getAll(),
+    environment: currentEnvironment,
   });
 }, 1000);
 
 const app = express();
 app.use(cors());
 app.use(express.json());
-app.use("/api", createRoutes(pool, controller));
+app.use("/api", createRoutes(pool, controller, () => currentEnvironment));
 
 app.listen(parseInt(API_PORT), () => {
   console.log(`[API] listening on :${API_PORT}`);

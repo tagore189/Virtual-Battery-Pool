@@ -14,6 +14,7 @@ export function createMqttClient(url, clientId) {
   client.subscribe([
     "battery/+/telemetry",
     "grid/frequency",
+    "environment/telemetry",
   ], { qos: 1 });
 
   return client;
