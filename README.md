@@ -1,4 +1,4 @@
-# GridPulse AI — Virtual Battery Pool Grid Stabilizer
+# GridPulse — Virtual Battery Pool Grid Stabilizer
 
 Real-time grid stabilization platform that aggregates distributed battery assets into a virtual pool, orchestrates charge/discharge cycles via MQTT, and provides a live monitoring dashboard.
 

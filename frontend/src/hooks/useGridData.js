@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useWebSocket } from './useWebSocket';
 
 const MAX_POINTS = 60;
@@ -33,6 +33,18 @@ export function useGridData() {
   const [environment, setEnvironment] = useState(DEFAULT_ENVIRONMENT);
   const [commandStatus, setCommandStatus] = useState(null);
 
+  const fetchEvents = useCallback(async () => {
+    try {
+      const res = await fetch('http://localhost:3001/api/events');
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data)) setEvents(data);
+      }
+    } catch {
+      // ignore network errors
+    }
+  }, []);
+
   useEffect(() => {
     fetch('http://localhost:3001/api/pool')
       .then(res => res.json())
@@ -47,10 +59,7 @@ export function useGridData() {
       .then(data => setGridState(data))
       .catch(() => {});
 
-    fetch('http://localhost:3001/api/events')
-      .then(res => res.json())
-      .then(data => setEvents(data))
-      .catch(() => {});
+    fetchEvents();
 
     fetch('http://localhost:3001/api/environment')
       .then(res => res.json())
@@ -60,7 +69,7 @@ export function useGridData() {
         }
       })
       .catch(() => {});
-  }, []);
+  }, [fetchEvents]);
 
   useEffect(() => {
     if (!lastMessage) return;
@@ -86,6 +95,9 @@ export function useGridData() {
       if (data.environment) {
         setEnvironment(prev => ({ ...prev, ...data.environment }));
       }
+      if (data.events && Array.isArray(data.events)) {
+        setEvents(data.events);
+      }
     } else if (type === 'battery') {
       setBatteries(prev => {
         const idx = prev.findIndex(b => b.id === data.id);
@@ -104,6 +116,16 @@ export function useGridData() {
       });
     } else if (type === 'environment') {
       setEnvironment(prev => ({ ...prev, ...data }));
+    } else if (type === 'event') {
+      if (data) {
+        setEvents(prev => {
+          const exists = prev.some(
+            e => e.timestamp === data.timestamp && e.type === data.type
+          );
+          if (exists) return prev;
+          return [...prev, data].slice(-200);
+        });
+      }
     }
   }, [lastMessage]);
 
@@ -204,5 +226,6 @@ export function useGridData() {
     resetSimulation,
     dispatchManualCommand,
     clearCommandStatus,
+    fetchEvents,
   };
 }

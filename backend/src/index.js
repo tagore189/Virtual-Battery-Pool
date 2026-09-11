@@ -19,6 +19,10 @@ const mqttClient = createMqttClient(MQTT_URL, MQTT_CLIENT_ID);
 const controller = new GridController(pool, mqttClient);
 const { broadcast } = createWsBroadcaster(parseInt(WS_PORT));
 
+controller.onEvent = (ev) => {
+  broadcast("event", ev);
+};
+
 let currentEnvironment = {
   weather: "clear",
   cloudCover: 10,
@@ -66,6 +70,7 @@ setInterval(() => {
     pool: pool.aggregate(),
     batteries: pool.getAll(),
     environment: currentEnvironment,
+    events: controller.getEvents().slice(-100),
   });
 }, 1000);
 

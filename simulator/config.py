@@ -1,5 +1,7 @@
-MQTT_HOST = "broker.emqx.io"
-MQTT_PORT = 1883
+import os
+
+MQTT_HOST = os.getenv("MQTT_HOST", "localhost")
+MQTT_PORT = int(os.getenv("MQTT_PORT", 1883))
 NUM_BATTERIES = 8
 BATTERY_DEFAULTS = {
     "capacity_kwh": 13.5,

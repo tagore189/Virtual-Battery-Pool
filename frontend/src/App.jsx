@@ -32,6 +32,7 @@ export default function App() {
     resetSimulation,
     dispatchManualCommand,
     clearCommandStatus,
+    fetchEvents,
   } = useGridData();
 
   return (
@@ -43,7 +44,7 @@ export default function App() {
       />
 
       <div className="flex flex-1 overflow-hidden">
-        <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
+        <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} eventCount={events.length} />
 
         <main className="flex-1 overflow-y-auto p-6 space-y-6">
           {/* Command Feedback Notification */}
@@ -156,7 +157,7 @@ export default function App() {
           )}
 
           {activeTab === 'events' && (
-            <EventLog events={events} />
+            <EventLog events={events} onRefresh={fetchEvents} />
           )}
         </main>
       </div>

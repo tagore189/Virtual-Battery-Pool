@@ -13,6 +13,7 @@ export class GridController {
     this.dispatches = [];
     this.freqHistory = [];
     this.events = [];
+    this.onEvent = null;
   }
 
   onFrequencyUpdate(freq) {
@@ -63,11 +64,20 @@ export class GridController {
     this.events.push(event);
     if (this.dispatches.length > MAX_HISTORY) this.dispatches.shift();
     if (this.events.length > 500) this.events.shift();
+
+    if (typeof this.onEvent === "function") {
+      this.onEvent(event);
+    }
   }
 
   addEvent(event) {
-    this.events.push({ ...event, timestamp: Date.now() });
+    const fullEvent = { ...event, timestamp: Date.now() };
+    this.events.push(fullEvent);
     if (this.events.length > 500) this.events.shift();
+
+    if (typeof this.onEvent === "function") {
+      this.onEvent(fullEvent);
+    }
   }
 
   getState() {

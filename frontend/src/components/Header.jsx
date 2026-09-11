@@ -15,7 +15,7 @@ export function Header({ isConnected, gridState, poolAggregate }) {
           ⚡
         </div>
         <div>
-          <h1 className="text-lg font-bold tracking-wide text-white leading-none">GridPulse AI</h1>
+          <h1 className="text-lg font-bold tracking-wide text-white leading-none">GridPulse</h1>
           <p className="text-xs text-slate-400 mt-0.5">Virtual Battery Pool Grid Stabilizer</p>
         </div>
       </div>

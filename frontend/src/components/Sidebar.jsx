@@ -1,6 +1,6 @@
 import React from 'react';
 
-export function Sidebar({ activeTab, setActiveTab }) {
+export function Sidebar({ activeTab, setActiveTab, eventCount = 0 }) {
   const navItems = [
     { id: 'dashboard', label: 'Dashboard', icon: '📊' },
     { id: 'visualization', label: 'Visualization', icon: '🔮' },
@@ -26,7 +26,12 @@ export function Sidebar({ activeTab, setActiveTab }) {
             }`}
           >
             <span className="text-base">{item.icon}</span>
-            <span>{item.label}</span>
+            <span className="flex-1 text-left">{item.label}</span>
+            {item.id === 'events' && eventCount > 0 && (
+              <span className="px-1.5 py-0.5 text-[10px] font-mono rounded-full bg-sky-500/20 text-sky-400 border border-sky-500/30">
+                {eventCount > 99 ? '99+' : eventCount}
+              </span>
+            )}
           </button>
         ))}
       </div>
